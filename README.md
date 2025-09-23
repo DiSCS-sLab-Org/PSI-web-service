@@ -50,8 +50,11 @@ psi/
 ### 1. Start the PSI Web Service
 
 ```bash
-# Activate Python environment
-python -m venv venv
+# Setup for VM deployment (if Python version mismatch)
+./setup_vm.sh
+
+# OR manual setup:
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
