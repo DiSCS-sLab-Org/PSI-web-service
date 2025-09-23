@@ -454,9 +454,7 @@
                     <p><strong>Your IPs:</strong> ${clientData.length}</p>
                     <p><strong>Intersection Found:</strong> ${intersectionIps.length} IPs</p>
                     <p><strong>Session ID:</strong> ${sessionId}</p>
-                    ${intersectionIps.length > 0 ? '<p>⚠️ Some of your IPs are in the threat intelligence database!</p>' : '<p>✅ None of your IPs are in the threat intelligence database.</p>'}
-                    ${intersectionIps.length > 0 ? `<p><strong>Matching IPs:</strong> ${intersectionIps.slice(0, 10).join(', ')}${intersectionIps.length > 10 ? '...' : ''}</p>` : ''}
-                    <p><small>🛡️ Your raw IP list never left your browser</small></p>
+                    ${intersectionIps.length > 0 ? '<p>✅ Intersection found</p>' : '<p>✅ No intersection found</p>'}
                 `);
 
                 // Refresh sessions
@@ -541,7 +539,7 @@
                                 <td>${session.intersection_size}</td>
                                 <td>
                                     <span class="status ${session.intersection_size > 0 ? 'warning' : 'success'}">
-                                        ${session.intersection_size > 0 ? 'Threats Found' : 'Clean'}
+                                        ${session.intersection_size > 0 ? 'Intersection Found' : 'Clean'}
                                     </span>
                                 </td>
                                 <td>
@@ -639,7 +637,7 @@
                                 <td>${session.client_ip}</td>
                                 <td>
                                     <span class="status ${session.intersection_size > 0 ? 'warning' : 'success'}">
-                                        ${session.intersection_size > 0 ? 'Threats Found' : 'Clean'}
+                                        ${session.intersection_size > 0 ? 'Intersection Found' : 'Clean'}
                                     </span>
                                 </td>
                             </tr>

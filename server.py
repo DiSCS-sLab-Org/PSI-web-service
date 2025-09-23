@@ -19,6 +19,7 @@ PSI_CONTAINER = os.getenv("PSI_CONTAINER", "raw").lower()  # raw | gcs | bloom
 PSI_FPR = float(os.getenv("PSI_FPR", "1e-9"))
 PSI_REVEAL = os.getenv("PSI_REVEAL", "elements").lower()  # elements | size
 PORT = int(os.getenv("PSI_PORT", "8000"))
+HOST = os.getenv("PSI_HOST", "0.0.0.0")  # localhost, 139.91.90.9, or 0.0.0.0
 SERVER_SET_PATH = os.getenv("SERVER_SET_PATH", "/data/server_ips.txt")
 
 # Initialize database
@@ -255,4 +256,4 @@ def admin_get_all_sessions(user_data: tuple = Depends(require_admin)):
 
 
 if __name__ == "__main__":
-    uvicorn.run("server:app", host="0.0.0.0", port=PORT, log_level="info")
+    uvicorn.run("server:app", host=HOST, port=PORT, log_level="info")

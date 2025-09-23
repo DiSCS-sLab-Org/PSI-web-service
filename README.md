@@ -55,8 +55,16 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# Start the web server
-SERVER_SET_PATH="data/server_ips.txt" python server.py
+# Choose your startup mode:
+
+# Option A: Development (localhost)
+./start_dev.sh
+
+# Option B: Production (VM IP)
+./start_prod.sh
+
+# Option C: Manual with custom settings
+PSI_HOST="your_ip" PSI_PORT="8000" SERVER_SET_PATH="data/server_ips.txt" python server.py
 ```
 
 **Expected output:**
@@ -68,6 +76,11 @@ INFO:     Uvicorn running on http://0.0.0.0:8000
 
 ### 2. Access the Web Dashboard
 
+**Development Mode:**
+- **URL**: http://127.0.0.1:8000
+- **Login Page**: http://127.0.0.1:8000/login
+
+**Production Mode:**
 - **URL**: http://139.91.90.9:8000
 - **Login Page**: http://139.91.90.9:8000/login
 
@@ -87,7 +100,7 @@ python init_user.py username password admin
 
 ### Web Dashboard Usage
 
-1. **Login** at http://139.91.90.9:8000/login
+1. **Login** at your server's login page (see URLs above)
 2. **Upload IP file**: Click "Choose File" and select an IP list
    - File should contain one IP address per line
    - Supports IPv4 format (e.g., `192.168.1.1`)
