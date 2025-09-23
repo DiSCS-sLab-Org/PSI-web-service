@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Database (runtime generated)
+data/psi.db
+data/psi.db-journal
+
+# Large sample data files (can be regenerated)
+data/client_ips.txt
+
+# CLI implementation directory (not needed for web dashboard)
+psi-cli/
+
+# Temporary/scratch files
+txt.txt
+*.tmp
+*.log
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
