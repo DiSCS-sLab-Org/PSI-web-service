@@ -10,16 +10,18 @@ ENV/
 
 # Database (runtime generated)
 data/psi.db
-data/server_ips.txt
 data/psi.db-journal
 
 README_archive.md
+
+generate_data.py
 
 setup_vm.sh
 start_dev.sh
 
 # Large sample data files (can be regenerated)
 data/client_ips.txt
+data/server_ips.txt
 
 # CLI implementation directory (not needed for web dashboard)
 psi-cli/

@@ -3,10 +3,13 @@
 A privacy-preserving web service for **secure IP-set intersection** using the [OpenMined PSI](https://github.com/OpenMined/PSI) library, compiled to WebAssembly for client-side execution.
 
 ## 🏗 Project Overview
-- **Client-side WebAssembly computation**: PSI cryptography runs entirely in the browser, so the client’s full list never reaches the server.
-- **Minimal data exposure**: The server only receives cryptographically blinded requests and returns an opaque response.  
-  Intersection results can be stored on the server **only through the backend logic** (e.g. `/results` or `/api/log-psi-result`), not because of an end-user choice in the interface.
-- **Role-based authentication & auditing**: Built-in user roles (admin/user) and session logging.
+- **Privacy-preserving PSI protocol**: Neither client nor server sees the other's complete IP dataset. Server processes encrypted client requests without accessing raw client data.
+- **Client-side intersection computation**: All PSI cryptography and intersection calculations run entirely in the browser using WebAssembly. Only the client can compute the final intersection results.
+- **Automatic intersection logging**: All computed intersection results are automatically sent to the server for threat intelligence analysis and audit purposes.
+- **Role-based access control**:
+  - **Users**: Upload IP lists, compute intersections, download their own results
+  - **Admins**: View all sessions, download any intersection data, access system-wide operations
+- **Comprehensive session tracking**: All PSI operations logged with timestamps, client metadata, and intersection details for security monitoring.
 
 ## 📁 Structure
 ```
@@ -20,9 +23,6 @@ psi/
 │   └── js/
 │       ├── psi_wasm_web.js   # WebAssembly PSI module (OpenMined)
 │       └── wasm_web.d.ts     # TypeScript definitions
-├── data/
-│   ├── server_ips.txt     # Server-side IP set
-│   └── psi.db             # Session log database
 └── requirements.txt       # Python dependencies
 ```
 
@@ -39,7 +39,6 @@ pip install -r requirements.txt
 
 Access the dashboard at:  
 `http://<server-ip>:8000`  
-Login page: `http://<server-ip>:8000/login`
 
 Create users:
 ```bash
@@ -52,8 +51,7 @@ python init_user.py username password admin  # admin
 1. **Login** at `/login`.
 2. **Upload an IP list** (one IP per line).
 3. **Compute PSI**: The browser’s WebAssembly module computes the private set intersection with the server’s list.
-4. **View or download results**.  
-   Any logging of intersection size or elements occurs only through the server-side code (not an optional client-side action).
+4. **Download results**.  
 
 ## 🔒 Privacy & Security
 
