@@ -13,6 +13,8 @@ data/psi.db
 data/server_ips.txt
 data/psi.db-journal
 
+README_archive.md
+
 setup_vm.sh
 start_dev.sh
 
