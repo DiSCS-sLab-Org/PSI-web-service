@@ -10,7 +10,11 @@ ENV/
 
 # Database (runtime generated)
 data/psi.db
+data/server_ips.txt
 data/psi.db-journal
+
+setup_vm.sh
+start_dev.sh
 
 # Large sample data files (can be regenerated)
 data/client_ips.txt
