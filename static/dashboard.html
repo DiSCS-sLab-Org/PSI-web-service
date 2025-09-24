@@ -583,6 +583,33 @@
             }
         }
 
+        async function downloadAdminSession(sessionId) {
+            try {
+                const response = await fetch(`/api/admin/sessions/${sessionId}/download`, {
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `psi_admin_results_${sessionId}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    alert('Failed to download admin session results.');
+                }
+            } catch (error) {
+                console.error('Admin download failed:', error);
+                alert('Admin download failed. Please try again.');
+            }
+        }
+
         async function loadAdminSessions() {
             if (currentUserRole !== 'admin' || !currentToken) return;
 
@@ -625,6 +652,7 @@
                             <th>Intersection</th>
                             <th>Client IP</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -639,6 +667,11 @@
                                     <span class="status ${session.intersection_size > 0 ? 'warning' : 'success'}">
                                         ${session.intersection_size > 0 ? 'Intersection Found' : 'Clean'}
                                     </span>
+                                </td>
+                                <td>
+                                    <button class="download-btn" onclick="downloadAdminSession(${session.id})">
+                                        Download
+                                    </button>
                                 </td>
                             </tr>
                         `).join('')}
@@ -682,6 +715,7 @@
         window.handleFileSelect = handleFileSelect;
         window.computePSI = computePSI;
         window.downloadSession = downloadSession;
+        window.downloadAdminSession = downloadAdminSession;
         window.logout = logout;
 
         // Initialize UI and load appropriate data based on user

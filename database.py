@@ -220,6 +220,38 @@ class Database:
 
         return None
 
+    def get_session_details_admin(self, session_id):
+        """Get detailed information about any session (admin only)"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT p.id, p.timestamp, p.client_size, p.intersection_size,
+                   p.intersection_data, p.client_ip, u.username
+            FROM psi_sessions p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.id = ?
+            """,
+            (session_id,)
+        )
+
+        row = cursor.fetchone()
+        conn.close()
+
+        if row:
+            return {
+                "id": row[0],
+                "timestamp": row[1],
+                "client_size": row[2],
+                "intersection_size": row[3],
+                "intersection_data": json.loads(row[4]) if row[4] else [],
+                "client_ip": row[5],
+                "username": row[6]
+            }
+
+        return None
+
     def get_all_sessions(self) -> List[Dict[str, Any]]:
         """Get all PSI sessions (admin view)"""
         conn = sqlite3.connect(self.db_path)
@@ -243,6 +275,35 @@ class Database:
                 "client_size": row[3],
                 "intersection_size": row[4],
                 "client_ip": row[5]
+            })
+
+        conn.close()
+        return sessions
+
+    def get_all_sessions_with_data(self) -> List[Dict[str, Any]]:
+        """Get all PSI sessions including intersection data (admin view)"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT p.id, u.username, p.timestamp, p.client_size,
+                   p.intersection_size, p.client_ip, p.intersection_data
+            FROM psi_sessions p
+            JOIN users u ON p.user_id = u.id
+            ORDER BY p.timestamp DESC
+            """)
+
+        sessions = []
+        for row in cursor.fetchall():
+            sessions.append({
+                "id": row[0],
+                "username": row[1],
+                "timestamp": row[2],
+                "client_size": row[3],
+                "intersection_size": row[4],
+                "client_ip": row[5],
+                "intersection_data": json.loads(row[6]) if row[6] else []
             })
 
         conn.close()

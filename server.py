@@ -69,12 +69,22 @@ class PSIStaticFiles(StaticFiles):
 # Mount static files with WASM support
 app.mount("/static", PSIStaticFiles(directory="static"), name="static")
 
-print(f"Loading server IPs from: {SERVER_SET_PATH}")
-server_items = load_ips(SERVER_SET_PATH)
-print(f"Loaded {len(server_items)} server IPs")
+# Initialize server items and PSI server
+server_items = None
+psi_server = None
 
-reveal_intersection = PSI_REVEAL == "elements"
-psi_server = server.CreateWithNewKey(reveal_intersection)
+def initialize_psi():
+    global server_items, psi_server
+    if server_items is None:
+        print(f"Loading server IPs from: {SERVER_SET_PATH}")
+        server_items = load_ips(SERVER_SET_PATH)
+        print(f"Loaded {len(server_items)} server IPs")
+
+        reveal_intersection = PSI_REVEAL == "elements"
+        psi_server = server.CreateWithNewKey(reveal_intersection)
+
+# Initialize PSI on module load
+initialize_psi()
 
 
 def get_current_user(credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)) -> Optional[tuple]:
@@ -254,6 +264,38 @@ def admin_get_all_sessions(user_data: tuple = Depends(require_admin)):
     sessions = db.get_all_sessions()
     return {"sessions": sessions}
 
+@app.get("/api/admin/sessions/detailed")
+def admin_get_all_sessions_detailed(user_data: tuple = Depends(require_admin)):
+    """Admin view of all sessions with intersection data"""
+    sessions = db.get_all_sessions_with_data()
+    return {"sessions": sessions}
+
+@app.get("/api/admin/sessions/{session_id}/download")
+def admin_download_session_results(session_id: int, user_data: tuple = Depends(require_admin)):
+    """Admin download any session results as JSON"""
+    user_id, role = user_data
+    session = db.get_session_details_admin(session_id)
+    if session is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    # Create downloadable JSON
+    result = {
+        "session_id": session["id"],
+        "timestamp": session["timestamp"],
+        "username": session.get("username", "unknown"),
+        "client_size": session["client_size"],
+        "intersection_size": session["intersection_size"],
+        "intersection": session["intersection_data"],
+        "client_ip": session["client_ip"]
+    }
+
+    return JSONResponse(
+        content=result,
+        headers={
+            "Content-Disposition": f"attachment; filename=psi_admin_results_{session_id}.json"
+        }
+    )
+
 
 if __name__ == "__main__":
-    uvicorn.run("server:app", host=HOST, port=PORT, log_level="info")
+    uvicorn.run(app, host=HOST, port=PORT, log_level="info")
