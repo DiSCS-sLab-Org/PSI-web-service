@@ -72,11 +72,4 @@ python init_user.py username password admin  # admin
 - Vanilla JavaScript (ES6+) for UI and Fetch API calls
 - HTML/CSS for responsive dashboard
 
-### Key API Endpoints
-- `GET /setup` – Send server PSI setup message
-- `POST /process` – Process PSI request and return PSI response
-- `POST /api/login` – Authenticate user
-- `GET /api/sessions` – Retrieve session history
-- `POST /api/log-psi-result` – Log PSI computation results
-
 ---
