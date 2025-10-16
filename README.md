@@ -24,3 +24,13 @@ This PSI web service allows organizations to securely compare their IP address l
 - **WebAssembly** - Client-side PSI cryptographic operations
 - **JavaScript ES6+** - Modern web interface
 - **Custom WASM MIME handling** - Secure WebAssembly execution
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+Copyright (c) 2025 FORTH Foundation for Research and Technology-Hellas
+
+### Third-Party Licenses
+
+This project uses [OpenMined PSI](https://github.com/OpenMined/PSI), which is licensed under the Apache License 2.0. See the [NOTICE](NOTICE) file for full attribution details.
