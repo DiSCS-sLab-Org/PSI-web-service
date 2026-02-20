@@ -4,11 +4,17 @@ import secrets
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 import json
+import os
 
 
 class Database:
-    def __init__(self, db_path: str = "data/psi.db"):
+    def __init__(self, db_path: Optional[str] = None):
+        if db_path is None:
+            db_path = os.getenv("PSI_DB_PATH", "data/psi.db")
         self.db_path = db_path
+        db_dir = os.path.dirname(self.db_path)
+        if db_dir:
+            os.makedirs(db_dir, exist_ok=True)
         self.init_db()
 
     def init_db(self):

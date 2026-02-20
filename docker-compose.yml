@@ -1,0 +1,29 @@
+services:
+  psi:
+    build:
+      context: .
+    image: psi-service:latest
+    container_name: psi-service
+    restart: unless-stopped
+    ports:
+      - "${PSI_HOST_PORT:-8000}:8000"
+    environment:
+      PSI_HOST: "${PSI_HOST:-0.0.0.0}"
+      PSI_PORT: "${PSI_PORT:-8000}"
+      PSI_DB_PATH: "${PSI_DB_PATH:-/data/psi.db}"
+      SERVER_SET_PATH: "${SERVER_SET_PATH:-/data/server_ips.txt}"
+      PSI_CONTAINER: "${PSI_CONTAINER:-raw}"
+      PSI_FPR: "${PSI_FPR:-1e-9}"
+      PSI_REVEAL: "${PSI_REVEAL:-elements}"
+    volumes:
+      - psi_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  psi_data:
+    name: psi_data
