@@ -58,7 +58,7 @@ docker compose restart psi
 ## Port
 
 - Container port: `8000`
-- Host port default: `8000` (same as current service)
+- Host port default: `8000` 
 - Change host port in `.env` with `PSI_HOST_PORT=<port>`
 
 ## Useful Commands
@@ -76,14 +76,3 @@ docker compose restart
 # Stop
 docker compose down
 ```
-
-## Existing Scripts (Reviewed)
-
-- `start_dev.sh`: Sets `PSI_HOST=127.0.0.1`, `PSI_PORT=8000`, `SERVER_SET_PATH=data/server_ips.txt`, then runs `python server.py`.
-  Needed with Docker: `No`.
-- `start_prod.sh`: Sets `PSI_HOST=139.91.90.9`, `PSI_PORT=8000`, `SERVER_SET_PATH=data/server_ips.txt`, then runs `python server.py`.
-  Needed with Docker: `No`.
-- `setup_vm.sh`: Recreates Python venv and installs requirements on the host VM.
-  Needed with Docker: `No`.
-
-These scripts are only for non-Docker runs.
