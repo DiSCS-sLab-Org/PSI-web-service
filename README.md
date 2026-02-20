@@ -1,6 +1,67 @@
 # Private Set Intersection (PSI) Service
 
-FastAPI-based PSI web service with Docker deployment.
+FastAPI-based web service for privacy-preserving IP set intersection.
+
+## What This Project Does
+
+This service lets a client compare its IP list against a server-side IP list without exposing the full client list to the server.
+
+It uses OpenMined PSI and provides:
+
+- PSI setup and processing endpoints (`/setup`, `/process`)
+- Web dashboard + login flow (`/`, `/login`)
+- User authentication with roles (`user`, `admin`)
+- Session logging in SQLite (client set size, intersection size, metadata)
+- Per-user and admin session views/download endpoints
+
+## How It Works
+
+1. Server loads a threat-intel IP set from `SERVER_SET_PATH` (default `/data/server_ips.txt`).
+2. Client asks `/setup` for PSI setup parameters.
+3. Client computes encrypted PSI request in browser-side JS/WASM.
+4. Server sends encrypted PSI response from `/process`.
+5. Client derives intersection and can log results to the server.
+6. Server stores session metadata in SQLite (`/data/psi.db`).
+
+## Why This Is PSI (and not plain upload)
+
+Naive approach (not PSI):
+
+- Client uploads full IP list to server.
+- Server directly computes intersection.
+- Server learns full client dataset.
+
+This service's PSI flow:
+
+- Client file is read locally in the browser (`FileReader`), not uploaded as raw list.
+- Browser creates cryptographic PSI request and sends only encoded request bytes to server.
+- Server processes request with its private key and dataset, returns PSI response bytes.
+- Browser computes final intersection locally using WASM.
+
+## What Each Side Learns
+
+Server side (current implementation):
+
+- Does not receive raw client input list.
+- Receives PSI request bytes at `/process`.
+- Receives intersection output only because dashboard currently calls `/api/log-psi-result` with `intersection_data`.
+
+Client side:
+
+- Does not receive plaintext `server_ips.txt`.
+- Receives PSI setup/response objects (`/setup`, `/process`) derived from server set.
+- Uses those objects to compute intersection locally.
+
+Important caveat:
+
+- The current dashboard sends intersection IPs back to server for session history/auditing.
+- If you want stricter privacy where server does not learn intersection elements, remove that logging call or store only counts.
+
+## How Server Set Is Used Without Sending Plain List
+
+- Server loads raw IPs from `/data/server_ips.txt` internally.
+- `/setup` returns a cryptographic setup message from `CreateSetupMessage(...)`, not the plaintext file.
+- Client can run PSI with this setup but does not directly get server plaintext IP rows from API responses.
 
 ## Run With Docker
 
